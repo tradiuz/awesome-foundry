@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+env:
+  package_type: module
+  package_id: awesome-foundry
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Substitute Manifest and Download Links For Versioned Ones
+      id: sub_manifest_link_version
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: 'module.json'
+      env:
+        version: ${{github.event.release.tag_name}}
+        manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/${{ env.package_type }}.json
+        download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/${{ env.package_type }}.zip
+#        flags: "{}"
+
+#    - name: Install Foundry VTT Cli and pack the source
+#      run: |
+#        npm install @foundryvtt/foundryvtt-cli --save-dev
+#        node scripts/convertJSONtoLDB.mjs
+
+    # Create a zip file with all files required by the system to add to the release
+    - run: zip -r ${{ env.package_type }}.zip README.md module.json 
+
+    # Create a release for this specific version
+    - name: Update Release with Files
+      id: create_version_release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        name: ${{ github.event.release.name }}
+        artifacts: './${{ env.package_type }}.json, ./${{ env.package_type }}.zip'
+        body: ${{ github.event.release.body }}
+
+

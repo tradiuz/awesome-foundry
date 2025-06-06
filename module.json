@@ -1,4 +1,14 @@
 {
+
+  "authors": [
+    {
+      "name": "tradiuz",
+      "email": "tradiuz@tradiuz.org",
+      "url": "https://tradiuz.org",
+      "discord": "tradiuz",
+      "flags": {}
+    }
+  ],
   "id": "awesome-foundry",
   "title": "awesome-foundry",
   "version": "1.0.0",
@@ -7,15 +17,7 @@
     "verified": "12.343",
     "maximum": "12"
   },
-  "authors": [
-    {
-      "name": "tradiuz",
-      "id": "tradiuz",
-      "discord": "tradiuz",
-      "email": "tradiuz@tradiuz.com",
-      "url": "https://tradiuz.org"
-    }
-  ],
+
   "relationships": {
     "requires": [
       {

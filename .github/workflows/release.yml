@@ -1,4 +1,4 @@
-name: Release
+name: Release and publish
 
 on:
   release:
@@ -8,13 +8,18 @@ env:
   package_type: module
   package_id: awesome-foundry
 
+concurrency:
+  group: "release"
+  cancel-in-progress: false
+
 jobs:
-  build:
+  release:
+    name: Update release with artifacts
     runs-on: ubuntu-latest
     permissions:
-      packages: write
       contents: write
-      statuses: write
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v2
 
@@ -27,15 +32,15 @@ jobs:
           version: ${{github.event.release.tag_name}}
           manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/${{ env.package_type }}.json
           download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/${{ env.package_type }}.zip
-      #        flags: "{}"
-
-      #    - name: Install Foundry VTT Cli and pack the source
-      #      run: |
-      #        npm install @foundryvtt/foundryvtt-cli --save-dev
-      #        node scripts/convertJSONtoLDB.mjs
+          flags: "{}"
 
       # Create a zip file with all files required by the system to add to the release
       - run: zip -r ${{ env.package_type }}.zip README.md module.json
+      - run: |
+          mkdir _site/
+          cp ${{ env.package_type }}.zip _site/
+          cp module.json _site/
+          cp index.html _site/
 
       # Create a release for this specific version
       - name: Update Release with Files
@@ -46,3 +51,13 @@ jobs:
           name: ${{ github.event.release.name }}
           artifacts: "./${{ env.package_type }}.json, ./${{ env.package_type }}.zip"
           body: ${{ github.event.release.body }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: "."
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

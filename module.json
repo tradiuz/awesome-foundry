@@ -259,5 +259,7 @@
     ]
   },
   "title": "awesome-foundry",
-  "version": "1.0.0"
+  "version": "latest",
+  "manifest": "https://tkc-dev-s3-manifests.s3.amazonaws.com/troika-community-content/0.0.1.json",
+  "download": "https://github.com/Cussa/fvtt-troika-community-content/releases/download/version/module.zip"
 }

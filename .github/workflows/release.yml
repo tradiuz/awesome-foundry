@@ -27,19 +27,18 @@ jobs:
         id: sub_manifest_link_version
         uses: microsoft/variable-substitution@v1
         with:
-          files: "module.json"
+          files: "${{ env.package_type }}.json"
         env:
           version: ${{github.event.release.tag_name}}
-          manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/${{ env.package_type }}.json
           download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/${{ env.package_type }}.zip
           flags: "{}"
 
       # Create a zip file with all files required by the system to add to the release
-      - run: zip -r ${{ env.package_type }}.zip README.md module.json
+      - run: zip -r ${{ env.package_type }}.zip README.md ${{ env.package_type }}.json
       - run: |
           mkdir _site/
           cp ${{ env.package_type }}.zip _site/
-          cp module.json _site/
+          cp ${{ env.package_type }}.json _site/
           cp index.html _site/
 
       # Create a release for this specific version

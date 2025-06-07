@@ -248,11 +248,6 @@
       },
       {
         "compatibility": {},
-        "id": "tidy-ui_game-settings",
-        "type": "module"
-      },
-      {
-        "compatibility": {},
         "id": "visual-active-effects",
         "type": "module"
       }
